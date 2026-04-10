@@ -30,6 +30,7 @@ target_position = Vector3(0, 0, -5)
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=843138556 node_paths=PackedStringArray("inventory_ui")]
 script = ExtResource("2_fmn8r")
 inventory_ui = NodePath("InventoryUI")
+wood = 0
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=1996696319]
 anchors_preset = 8
@@ -46,6 +47,47 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
+[node name="BuildInfoLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -96.0
+offset_right = -20.0
+offset_bottom = -20.0
+horizontal_alignment = 1
+text = "Press B to enter Build Mode"
+
+[node name="HookChargeBar" type="ProgressBar" parent="CanvasLayer"]
+visible = false
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -60.0
+offset_right = 140.0
+offset_bottom = -36.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="HookInfoLabel" type="Label" parent="CanvasLayer"]
+visible = false
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -86.0
+offset_right = 200.0
+offset_bottom = -62.0
+horizontal_alignment = 1
+text = "Hook Charge: 0%  Range: 0.0m"
+
 [node name="InventoryUI" type="Panel" parent="CanvasLayer" unique_id=1841900550]
 visible = false
 anchors_preset = 8
@@ -53,38 +95,109 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -196.5
-offset_top = -133.0
-offset_right = 196.5
-offset_bottom = 133.0
+offset_left = -240.0
+offset_top = -170.0
+offset_right = 240.0
+offset_bottom = 170.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
-[node name="BoxContainer" type="BoxContainer" parent="CanvasLayer/InventoryUI" unique_id=1451741590]
-layout_mode = 0
-offset_left = 18.5
-offset_top = 32.0
-offset_right = 163.5
-offset_bottom = 72.0
+[node name="TabContainer" type="TabContainer" parent="CanvasLayer/InventoryUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="WallButton" type="Button" parent="CanvasLayer/InventoryUI/BoxContainer" unique_id=1142308525]
+[node name="InventoryTab" type="Control" parent="CanvasLayer/InventoryUI/TabContainer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer"]
 layout_mode = 2
-text = "Wall"
+theme_override_constants/separation = 8
 
-[node name="RaftButton" type="Button" parent="CanvasLayer/InventoryUI/BoxContainer" unique_id=1755011235]
+[node name="WoodLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Raft"
+text = "Wood: 0"
 
-[node name="LadderButton" type="Button" parent="CanvasLayer/InventoryUI/BoxContainer" unique_id=871615595]
+[node name="RaftCountLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Ladder"
+text = "Raft tiles: 0"
 
-[node name="Label" type="Label" parent="CanvasLayer/InventoryUI" unique_id=1893875711]
-layout_mode = 0
-offset_left = 16.5
-offset_top = 5.0
-offset_right = 91.5
-offset_bottom = 28.0
-text = "Inventory"
+[node name="WallCostLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Walls use wood directly"
+
+[node name="LadderCountLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Ladder tiles: 0"
+
+[node name="SlotLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Slots used: 0 / 5"
+
+[node name="SlotGridLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "[ ][ ][ ][ ][ ]"
+
+[node name="BackpackLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Backpacks crafted: 0"
+
+[node name="CraftingTab" type="Control" parent="CanvasLayer/InventoryUI/TabContainer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RaftCraftButton" type="Button" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Craft Raft Tile"
+
+[node name="LadderCraftButton" type="Button" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Craft Ladder Tile"
+
+[node name="BackpackCraftButton" type="Button" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Craft Backpack"
