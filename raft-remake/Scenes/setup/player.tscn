@@ -95,10 +95,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -170.0
-offset_right = 240.0
-offset_bottom = 170.0
+offset_left = -220.0
+offset_top = -160.0
+offset_right = 220.0
+offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -146,25 +146,13 @@ text = "Wood: 0"
 layout_mode = 2
 text = "Raft tiles: 0"
 
-[node name="WallCostLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
+[node name="WallCountLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Walls use wood directly"
+text = "Wall tiles: 0"
 
 [node name="LadderCountLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Ladder tiles: 0"
-
-[node name="SlotLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Slots used: 0 / 5"
-
-[node name="SlotGridLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "[ ][ ][ ][ ][ ]"
-
-[node name="BackpackLabel" type="Label" parent="CanvasLayer/InventoryUI/TabContainer/InventoryTab/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Backpacks crafted: 0"
 
 [node name="CraftingTab" type="Control" parent="CanvasLayer/InventoryUI/TabContainer"]
 layout_mode = 3
@@ -194,10 +182,10 @@ theme_override_constants/separation = 8
 layout_mode = 2
 text = "Craft Raft Tile"
 
+[node name="WallCraftButton" type="Button" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Craft Wall Tile"
+
 [node name="LadderCraftButton" type="Button" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Craft Ladder Tile"
-
-[node name="BackpackCraftButton" type="Button" parent="CanvasLayer/InventoryUI/TabContainer/CraftingTab/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Craft Backpack"
