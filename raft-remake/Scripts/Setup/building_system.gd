@@ -2,6 +2,7 @@ extends Node3D
 
 enum BuildType { TILE, WALL, LADDER, BREAK }
 var current_mode: BuildType = BuildType.TILE
+var is_build_mode: bool = false
 
 @export_group("Scenes")
 @export var raft_tile_scene: PackedScene
@@ -34,8 +35,18 @@ func _ready():
 	_place_starting_tile(Vector3i(roundi(player.global_position.x / tile_size), 0, roundi(player.global_position.z / tile_size)))
 
 func _process(_delta):
+	if inventory_manager.is_open:
+		can_place = false
+		_update_ghost_visibility()
+		_update_build_info()
+		return
+
 	_handle_mode_input()
 	_update_ghost()
+	_update_build_info()
+
+	if not is_build_mode:
+		return
 
 	if Input.is_action_just_pressed("interact"):
 		if current_mode == BuildType.BREAK:
@@ -58,12 +69,22 @@ func _handle_mode_input():
 	if Input.is_key_pressed(KEY_3): _switch_mode(BuildType.LADDER)
 	if Input.is_key_pressed(KEY_4): _switch_mode(BuildType.BREAK)
 
+	if Input.is_action_just_pressed("build_mode"):
+		is_build_mode = not is_build_mode
+		if not is_build_mode:
+			_highlight_for_break(null)
+		_update_ghost_visibility()
+
 func _switch_mode(new_mode):
-	if current_mode == new_mode: return
-	if current_mode == BuildType.BREAK: _highlight_for_break(null)
+	if current_mode == new_mode:
+		return
+	if current_mode == BuildType.BREAK:
+		_highlight_for_break(null)
 	current_mode = new_mode
-	if ghost_tile: ghost_tile.queue_free()
+	if ghost_tile:
+		ghost_tile.queue_free()
 	_setup_ghost()
+	_update_ghost_visibility()
 
 func _setup_ghost():
 	if current_mode == BuildType.BREAK:
@@ -82,9 +103,21 @@ func _setup_ghost():
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.2, 1.0, 0.2, 0.4)
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	for child in ghost_tile.find_children("*", "MeshInstance3D"): child.material_override = mat
+	for child in ghost_tile.find_children("*", "MeshInstance3D"):
+		child.material_override = mat
+
+func _update_ghost_visibility():
+	if not ghost_tile:
+		return
+	ghost_tile.visible = is_build_mode and current_mode != BuildType.BREAK
 
 func _update_ghost():
+	if not is_build_mode:
+		can_place = false
+		_update_ghost_visibility()
+		_highlight_for_break(null)
+		return
+
 	var origin = camera.global_position
 	var direction = -camera.global_transform.basis.z
 	var end = origin + direction * max_place_distance
@@ -95,8 +128,12 @@ func _update_ghost():
 	var result = space_state.intersect_ray(query)
 
 	if current_mode == BuildType.BREAK:
-		if result: _highlight_for_break(result.collider)
-		else: _highlight_for_break(null)
+		if result:
+			_highlight_for_break(result.collider)
+		else:
+			_highlight_for_break(null)
+		can_place = result.size() > 0
+		_update_ghost_visibility()
 		return
 
 	_highlight_for_break(null)
@@ -114,7 +151,7 @@ func _update_ghost():
 		if origin.distance_to(hit_pos) <= max_place_distance:
 			is_valid_hit = true
 
-	ghost_tile.visible = is_valid_hit
+	ghost_tile.visible = is_valid_hit and is_build_mode
 	if not is_valid_hit:
 		can_place = false
 		return
@@ -135,6 +172,29 @@ func _update_ghost():
 	ghost_tile.global_position = current_place_pos
 	ghost_tile.rotation.y = ghost_rotation
 	_update_ghost_color()
+
+func _update_build_info():
+	if inventory_manager.is_open:
+		build_info_label.visible = false
+		return
+
+	if not is_build_mode:
+		build_info_label.visible = true
+		build_info_label.text = "Press B to enter Build Mode"
+		return
+
+	build_info_label.visible = true
+	var mode_text = ""
+	match current_mode:
+		BuildType.TILE:
+			mode_text = inventory_manager.get_build_mode_hint("raft")
+		BuildType.WALL:
+			mode_text = inventory_manager.get_build_mode_hint("wall")
+		BuildType.LADDER:
+			mode_text = inventory_manager.get_build_mode_hint("ladder")
+		BuildType.BREAK:
+			mode_text = inventory_manager.get_build_mode_hint("break")
+	build_info_label.text = "Build Mode [1:Raft 2:Wall 3:Ladder 4:Break]\n%s" % mode_text
 
 func _calculate_edge_snap(hit_pos: Vector3):
 	var snapped_x = round(hit_pos.x / tile_size) * tile_size

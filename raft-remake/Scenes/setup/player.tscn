@@ -47,6 +47,47 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
+[node name="BuildInfoLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -96.0
+offset_right = -20.0
+offset_bottom = -20.0
+horizontal_alignment = 1
+text = "Press B to enter Build Mode"
+
+[node name="HookChargeBar" type="ProgressBar" parent="CanvasLayer"]
+visible = false
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -60.0
+offset_right = 140.0
+offset_bottom = -36.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="HookInfoLabel" type="Label" parent="CanvasLayer"]
+visible = false
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -86.0
+offset_right = 200.0
+offset_bottom = -62.0
+horizontal_alignment = 1
+text = "Hook Charge: 0%  Range: 0.0m"
+
 [node name="InventoryUI" type="Panel" parent="CanvasLayer" unique_id=1841900550]
 visible = false
 anchors_preset = 8
