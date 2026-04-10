@@ -31,6 +31,7 @@ var ghost_rotation: float = 0.0
 var can_place: bool = false
 
 func _ready():
+	build_info_label = get_node_or_null("../Player/CanvasLayer/BuildInfoLabel")
 	_setup_ghost()
 	_place_starting_tile(Vector3i(roundi(player.global_position.x / tile_size), 0, roundi(player.global_position.z / tile_size)))
 
