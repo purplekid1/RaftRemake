@@ -3,19 +3,31 @@ class_name FloatingItem
 
 @export_group("Settings")
 @export var speed: float = 3.0
-# Assuming your raft is at Z=0, spawning at -Z and flowing towards +Z
-@export var float_direction: Vector3 = Vector3(0, 0, 1) 
-@export var despawn_z: float = 30.0 # How far behind the raft before it deletes itself
+@export var float_direction: Vector3 = Vector3(0, 0, 1)
+@export var despawn_z: float = 30.0
+@export var wood_amount: int = 1
+
+func _ready():
+	body_entered.connect(_on_body_entered)
 
 func _process(delta):
-	# Move the item continuously
 	global_position += float_direction * speed * delta
-	
-	# Memory Management: Delete the item if the player missed it and it floated too far away
+
 	if global_position.z > despawn_z:
 		queue_free()
 
-# We will call this later when the player's hook or body touches it!
-func collect():
-	# You can add a sound effect or particle here later
-	queue_free()
+func _on_body_entered(body: Node3D):
+	if not body is CharacterBody3D:
+		return
+
+	var inventory_manager: InventoryManager = body.get_node_or_null("CanvasLayer")
+	if inventory_manager:
+		collect(inventory_manager)
+
+func collect(inventory_manager: InventoryManager):
+	if not inventory_manager:
+		return
+
+	var added = inventory_manager.add_wood(wood_amount)
+	if added > 0:
+		queue_free()
