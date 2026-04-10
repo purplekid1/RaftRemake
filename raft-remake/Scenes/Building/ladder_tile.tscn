@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://b0rffp8wou8y1"]
+
+[ext_resource type="Script" uid="uid://ya87klmkt1ux" path="res://Scripts/Setup/ladder_tile.gd" id="1_lmvfl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mtlqv"]
+size = Vector3(0.5, 1.4959717, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mtlqv"]
+albedo_color = Color(0.19076231, 0.19076234, 0.19076231, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mvkqw"]
+material = SubResource("StandardMaterial3D_mtlqv")
+size = Vector3(0.5, 1.5, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xqndh"]
+size = Vector3(0.5, 1.4060303, 0.21239454)
+
+[node name="StaticBody3D" type="StaticBody3D" unique_id=1519532816]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=275958008]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0.003999993)
+shape = SubResource("BoxShape3D_mtlqv")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CollisionShape3D2" unique_id=1442271146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0021742582, -0.002529502)
+mesh = SubResource("BoxMesh_mvkqw")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=227199055]
+script = ExtResource("1_lmvfl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1597531022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7583482, 0.003087461)
+shape = SubResource("BoxShape3D_xqndh")

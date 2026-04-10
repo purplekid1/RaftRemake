@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://5burvdng8ykx"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_07s14"]
+
+[sub_resource type="Gradient" id="Gradient_07s14"]
+colors = PackedColorArray(0.2520276, 0.25202766, 0.25202763, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_e33xp"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r3yti"]
+noise = SubResource("FastNoiseLite_e33xp")
+color_ramp = SubResource("Gradient_07s14")
+seamless = true
+as_normal_map = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lfstc"]
+frequency = 0.3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rsy3g"]
+noise = SubResource("FastNoiseLite_lfstc")
+seamless = true
+as_normal_map = true
+seamless_blend_skirt = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j2brg"]
+albedo_color = Color(0.3409093, 0.10986108, 0, 1)
+albedo_texture = SubResource("NoiseTexture2D_r3yti")
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_rsy3g")
+
+[sub_resource type="BoxMesh" id="BoxMesh_e33xp"]
+material = SubResource("StandardMaterial3D_j2brg")
+size = Vector3(2, 0.1, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r3yti"]
+size = Vector3(2, 0.1, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4mbbs"]
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.1882353)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2a8kd"]
+material = SubResource("StandardMaterial3D_4mbbs")
+size = Vector3(2.1, 0.12, 2.1)
+
+[node name="RaftTile" type="StaticBody3D" unique_id=1017045755]
+physics_material_override = SubResource("PhysicsMaterial_07s14")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1074300143]
+mesh = SubResource("BoxMesh_e33xp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=275958008]
+shape = SubResource("BoxShape3D_r3yti")
+
+[node name="Highlight" type="MeshInstance3D" parent="." unique_id=363952106]
+visible = false
+mesh = SubResource("BoxMesh_2a8kd")

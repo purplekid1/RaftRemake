@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bt0igga86fgxr"]
+
+[ext_resource type="Script" uid="uid://b4dhni1m16f43" path="res://Scripts/Setup/FloatingItem.gd" id="1_jrpt4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_v70jw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ogqjx"]
+albedo_color = Color(0.19875363, 0.1033408, 0.014196634, 1)
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_3f67b"]
+material = SubResource("StandardMaterial3D_ogqjx")
+radius = 0.1
+
+[node name="FloatingWood" type="Area3D" unique_id=512402538]
+script = ExtResource("1_jrpt4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1854313940]
+shape = SubResource("SphereShape3D_v70jw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D" unique_id=121725181]
+transform = Transform3D(1, 0, 0, 0, -2.340684e-08, -0.9771404, 0, 0.53548604, -4.2712166e-08, 0, 0, 0)
+mesh = SubResource("TubeTrailMesh_3f67b")

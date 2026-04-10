@@ -1,0 +1,142 @@
+[gd_scene format=3 uid="uid://dd0i6fynaj0r1"]
+
+[ext_resource type="Script" uid="uid://dem3r08pkx7jq" path="res://Scripts/Water/animation_player.gd" id="1_xsitt"]
+[ext_resource type="PackedScene" uid="uid://7aigf57njpa6" path="res://Scenes/setup/player.tscn" id="2_vu8lo"]
+[ext_resource type="Script" uid="uid://tvx42bws4v6b" path="res://Scripts/Setup/building_system.gd" id="3_7i7gy"]
+[ext_resource type="PackedScene" uid="uid://5burvdng8ykx" path="res://Scenes/Building/raft_tile.tscn" id="4_7w2h2"]
+[ext_resource type="PackedScene" uid="uid://bwkhx3fg5e2x2" path="res://Scenes/Building/wall_tile.tscn" id="5_ah65f"]
+[ext_resource type="PackedScene" uid="uid://b0rffp8wou8y1" path="res://Scenes/Building/ladder_tile.tscn" id="6_egvcl"]
+[ext_resource type="Script" uid="uid://5f0fequ5ymja" path="res://Scripts/Setup/resource_spawner.gd" id="7_vu8lo"]
+[ext_resource type="PackedScene" uid="uid://bt0igga86fgxr" path="res://Scenes/setup/floating_wood.tscn" id="8_7i7gy"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_ig7tw"]
+sky_material = SubResource("ProceduralSkyMaterial_7dm0k")
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 2
+sky = SubResource("Sky_ig7tw")
+tonemap_mode = 2
+
+[sub_resource type="Gradient" id="Gradient_7dm0k"]
+colors = PackedColorArray(0.72464263, 0.7246426, 0.7246426, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ig7tw"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0xm2m"]
+noise = SubResource("FastNoiseLite_ig7tw")
+color_ramp = SubResource("Gradient_7dm0k")
+seamless = true
+seamless_blend_skirt = 1.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_h2yge"]
+frequency = 0.0057
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1bvp3"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_h2yge")
+seamless = true
+as_normal_map = true
+seamless_blend_skirt = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+albedo_color = Color(8.663535e-07, 0.3090991, 0.7820143, 1)
+albedo_texture = SubResource("NoiseTexture2D_0xm2m")
+roughness = 0.25
+roughness_texture_channel = 3
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = SubResource("NoiseTexture2D_1bvp3")
+uv1_scale = Vector3(5, 5, 5)
+
+[sub_resource type="QuadMesh" id="QuadMesh_7mycd"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0xm2m"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h2yge"]
+size = Vector3(100, 0.69677734, 100)
+
+[sub_resource type="Animation" id="Animation_272bh"]
+resource_name = "Flow"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Water:material_override:uv1_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_5vw27"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Water:material_override:uv1_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kek77"]
+_data = {
+&"Flow": SubResource("Animation_272bh"),
+&"RESET": SubResource("Animation_5vw27")
+}
+
+[node name="Main" type="Node3D" unique_id=888809970]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1152859425]
+environment = SubResource("Environment_0xm2m")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=773414221]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Water" type="MeshInstance3D" parent="." unique_id=1569604311]
+transform = Transform3D(-4.371139e-06, -100, -4.371139e-06, 0, -4.371139e-06, 100, -100, 4.371139e-06, 1.9106854e-13, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_lquwl")
+mesh = SubResource("QuadMesh_7mycd")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Water" unique_id=1163467761]
+transform = Transform3D(0.01, 0, 0, 0, -4.371139e-10, -0.01, 0, 0.01, -4.371139e-10, 0, 0, 0)
+physics_material_override = SubResource("PhysicsMaterial_0xm2m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Water/StaticBody3D" unique_id=670086119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.489237, 0)
+shape = SubResource("BoxShape3D_h2yge")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=966423823]
+process_mode = 3
+libraries/ = SubResource("AnimationLibrary_kek77")
+speed_scale = 0.05
+script = ExtResource("1_xsitt")
+
+[node name="Player" parent="." unique_id=1018558153 instance=ExtResource("2_vu8lo")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 2.1263232, 0)
+
+[node name="Raft" type="Node3D" parent="." unique_id=1137402821]
+script = ExtResource("3_7i7gy")
+raft_tile_scene = ExtResource("4_7w2h2")
+wall_scene = ExtResource("5_ah65f")
+ladder_scene = ExtResource("6_egvcl")
+
+[node name="ResourceSpawner" type="Node3D" parent="." unique_id=849282617]
+script = ExtResource("7_vu8lo")
+item_scenes = Array[PackedScene]([ExtResource("8_7i7gy")])
+
+[node name="Timer" type="Timer" parent="ResourceSpawner" unique_id=1390857755]
+autostart = true
