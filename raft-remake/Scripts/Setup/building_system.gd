@@ -18,7 +18,6 @@ var is_build_mode: bool = false
 @onready var player: CharacterBody3D = get_node("../Player")
 @onready var camera: Camera3D = get_node("../Player/Head/Camera3D")
 @onready var inventory_manager: InventoryManager = get_node("../Player/CanvasLayer")
-var build_info_label: Label
 @onready var raft: Node3D = get_node("../Raft")
 
 var raft_tiles: Dictionary = {}
@@ -35,8 +34,6 @@ func _ready():
 	build_info_label = get_node_or_null("../Player/CanvasLayer/BuildInfoLabel")
 	_setup_ghost()
 	_place_starting_tile(Vector3i(roundi(player.global_position.x / tile_size), 0, roundi(player.global_position.z / tile_size)))
-	_update_build_info()
-	_update_ghost_visibility()
 
 func _process(_delta):
 	if inventory_manager.is_open:
@@ -61,7 +58,7 @@ func _process(_delta):
 					if inventory_manager.consume_crafted_piece("raft"):
 						_place_tile(current_grid_pos_3d)
 				BuildType.WALL:
-					if inventory_manager.spend_wood(inventory_manager.wall_tile_wood_cost):
+					if inventory_manager.consume_crafted_piece("wall"):
 						_place_structure(current_place_pos, ghost_rotation)
 				BuildType.LADDER:
 					if inventory_manager.consume_crafted_piece("ladder"):
@@ -102,8 +99,7 @@ func _setup_ghost():
 
 	ghost_tile = scene.instantiate()
 	add_child(ghost_tile)
-	for child in ghost_tile.find_children("*", "CollisionShape3D"):
-		child.disabled = true
+	for child in ghost_tile.find_children("*", "CollisionShape3D"): child.disabled = true
 
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.2, 1.0, 0.2, 0.4)
@@ -127,9 +123,10 @@ func _update_ghost():
 	var direction = -camera.global_transform.basis.z
 	var end = origin + direction * max_place_distance
 
+	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(origin, end)
 	query.exclude = [player.get_rid()]
-	var result = get_world_3d().direct_space_state.intersect_ray(query)
+	var result = space_state.intersect_ray(query)
 
 	if current_mode == BuildType.BREAK:
 		if result:
@@ -168,7 +165,7 @@ func _update_ghost():
 		can_place = _can_place_tile_3d(current_grid_pos_3d) and inventory_manager.has_crafted_piece("raft")
 	elif current_mode == BuildType.WALL:
 		_calculate_edge_snap(hit_pos)
-		can_place = _can_place_on_edge(current_place_pos) and inventory_manager.can_afford_wood(inventory_manager.wall_tile_wood_cost)
+		can_place = _can_place_on_edge(current_place_pos) and inventory_manager.has_crafted_piece("wall")
 	else:
 		_calculate_edge_snap(hit_pos)
 		can_place = _can_place_on_edge(current_place_pos) and inventory_manager.has_crafted_piece("ladder")
@@ -178,9 +175,6 @@ func _update_ghost():
 	_update_ghost_color()
 
 func _update_build_info():
-	if not build_info_label:
-		return
-
 	if inventory_manager.is_open:
 		build_info_label.visible = false
 		return

@@ -22,12 +22,5 @@ func _on_body_entered(body: Node3D):
 
 	var inventory_manager: InventoryManager = body.get_node_or_null("CanvasLayer")
 	if inventory_manager:
-		collect(inventory_manager)
-
-func collect(inventory_manager: InventoryManager):
-	if not inventory_manager:
-		return
-
-	var added = inventory_manager.add_wood(wood_amount)
-	if added > 0:
+		inventory_manager.add_wood(wood_amount)
 		queue_free()
